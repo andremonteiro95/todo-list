@@ -1,10 +1,10 @@
 const express = require('express');
 const authRoutes = require('./auth');
-const projectRoutes = require('./project');
+const projectsRoutes = require('./projects');
 
 const apiRouter = express.Router();
 
 apiRouter.use('/auth', authRoutes);
-apiRouter.use('/project', projectRoutes);
+apiRouter.use('/projects', projectsRoutes);
 
 module.exports = apiRouter;

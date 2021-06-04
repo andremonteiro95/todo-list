@@ -2,7 +2,10 @@ const compression = require('compression');
 const cookieParser = require('cookie-parser');
 const express = require('express');
 const path = require('path');
+const dotenv = require('dotenv');
 const apiRouter = require('./router');
+
+dotenv.config();
 
 const app = express();
 

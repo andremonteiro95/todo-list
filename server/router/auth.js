@@ -1,20 +1,26 @@
 const express = require('express');
 const db = require('../db');
-const { hashPassword, checkPassword } = require('../utils/auth');
+const {
+  hashPassword,
+  checkPassword,
+  generateAccessToken,
+} = require('../utils/auth');
 
 const router = express.Router();
-
-router.use(function (req, res, next) {
-  res.type('json');
-  next();
-});
 
 router.post('/signup', function (req, res) {
   const { email, name, password } = req.body;
 
   if (!email || !name || !password) {
     res.status(400);
-    res.send({ error: 'Missing information' });
+    res.json({ error: 'Missing information.' });
+    return;
+  }
+
+  const user = db.get('users').find({ email }).value();
+  if (!!user) {
+    res.status(409);
+    res.json({ error: 'Email already exists.' });
     return;
   }
 
@@ -26,8 +32,11 @@ router.post('/signup', function (req, res) {
       password: hashedPassword,
     })
     .write();
-  res.status(200);
-  res.send();
+
+  const token = generateAccessToken({ email });
+
+  res.status(201);
+  res.json(token);
 });
 
 router.post('/login', function (req, res) {
@@ -35,7 +44,7 @@ router.post('/login', function (req, res) {
 
   if (!email || !password) {
     res.status(400);
-    res.send({ error: 'Missing information.' });
+    res.json({ error: 'Missing information.' });
     return;
   }
 
@@ -43,7 +52,7 @@ router.post('/login', function (req, res) {
 
   if (!user) {
     res.status(400);
-    res.send({ error: 'Invalid credentials.' });
+    res.json({ error: 'Invalid credentials.' });
     return;
   }
 
@@ -51,12 +60,14 @@ router.post('/login', function (req, res) {
 
   if (!isPasswordValid) {
     res.status(400);
-    res.send({ error: 'Invalid credentials.' });
+    res.json({ error: 'Invalid credentials.' });
     return;
   }
 
+  const token = generateAccessToken({ email });
+
   res.status(200);
-  res.send();
+  res.json(token);
 });
 
 module.exports = router;
