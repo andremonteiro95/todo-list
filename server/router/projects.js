@@ -5,30 +5,52 @@ const { authenticateUser } = require('../middleware/auth');
 
 const router = express.Router();
 
+router.delete('/:id', authenticateUser, function (req, res) {
+  const { email } = req.user;
+  const { id } = req.params;
+
+  const project = db
+    .get('projects')
+    .find({
+      id,
+      owner: email,
+    })
+    .value();
+
+  if (!project) {
+    res.sendStatus(403);
+    return;
+  }
+
+  db.get('projects').remove({ id }).write();
+  res.sendStatus(200);
+});
+
 router.put('/:id', authenticateUser, function (req, res) {
   const { email } = req.user;
   const { id } = req.params;
-  const { name } = req.body;
-
-  if (!name) {
-    res.status(400);
-    res.json({ error: 'Missing information.' });
-    return;
-  }
 
   const project = db.get('projects').find({
     id,
     owner: email,
   });
+  const value = project.value();
 
-  if (!project.value()) {
+  if (!value) {
     res.sendStatus(403);
     return;
   }
 
-  project.assign({ name });
+  const { name } = req.body;
+  if (!name || typeof name !== 'string' || !name.trim()) {
+    res.status(400);
+    res.json({ error: 'Missing information.' });
+    return;
+  }
 
-  res.sendStatus(201);
+  project.assign({ name }).write();
+
+  res.sendStatus(200);
 });
 
 router.post('/', authenticateUser, function (req, res) {
