@@ -1,14 +1,11 @@
-const lowdb = require('lowdb');
-const FileAsync = require('lowdb/adapters/FileAsync');
+const low = require('lowdb');
+const FileSync = require('lowdb/adapters/FileSync');
 
-const adapter = new FileAsync('db.json');
+const adapter = new FileSync('db.json');
+const db = low(adapter);
 
-const initDatabase = () => {
-  return lowdb(adapter).then((db) => {
-    db.defaults({ posts: [] }).write();
-  });
-};
+db.defaults({
+  users: [],
+}).write();
 
-module.exports = {
-  init: initDatabase,
-};
+module.exports = db;
