@@ -1,14 +1,17 @@
 import {
   Button,
-  Checkbox,
-  FormControlLabel,
   TextField,
   Typography,
+  Link,
+  FormControlLabel,
+  Checkbox,
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import React from 'react';
 import { useForm } from 'react-hook-form';
-import { Link } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { Link as RouterLink } from 'react-router-dom';
+import { login } from '../../redux/slices/auth';
 import AuthContainer from './AuthContainer';
 
 const useStyles = makeStyles((theme) => ({
@@ -56,10 +59,6 @@ function SignUp() {
           id="password"
           autoComplete="current-password"
         />
-        <FormControlLabel
-          control={<Checkbox value="remember" color="primary" />}
-          label="Remember me"
-        />
         <Button
           type="submit"
           fullWidth
@@ -70,8 +69,14 @@ function SignUp() {
           Sign In
         </Button>
       </form>
-      <Link className={classes.link} href="#" variant="body2">
-        {"Don't have an account? Sign Up"}
+      <Link
+        component={RouterLink}
+        to="/login"
+        className={classes.link}
+        href="#"
+        variant="body2"
+      >
+        {'Already have an account? Log in'}
       </Link>
     </AuthContainer>
   );

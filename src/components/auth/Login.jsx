@@ -1,9 +1,9 @@
-import { Button, TextField, Typography } from '@material-ui/core';
+import { Button, TextField, Typography, Link } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
-import { Link } from 'react-router-dom';
+import { Link as RouterLink } from 'react-router-dom';
 import { login } from '../../redux/slices/auth';
 import AuthContainer from './AuthContainer';
 
@@ -71,8 +71,14 @@ function Login() {
           Log in
         </Button>
       </form>
-      <Link className={classes.link} href="#" variant="body2">
-        {"Don't have an account? Sign Up"}
+      <Link
+        component={RouterLink}
+        to="/signup"
+        className={classes.link}
+        href="#"
+        variant="body2"
+      >
+        {"Don't have an account? Sign up"}
       </Link>
     </AuthContainer>
   );

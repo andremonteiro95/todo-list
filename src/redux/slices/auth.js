@@ -1,8 +1,20 @@
 import { createSlice } from '@reduxjs/toolkit';
+import Cookies from 'js-cookie';
 import jwt from 'jsonwebtoken';
 
+const getCurrentUser = () => {
+  const token = Cookies.get('token');
+
+  if (!token) {
+    return undefined;
+  }
+
+  const { email, name } = jwt.decode(token);
+  return { email, name };
+};
+
 const initialState = {
-  currentUser: undefined,
+  currentUser: getCurrentUser(),
   loading: false,
   error: undefined,
 };
@@ -16,9 +28,9 @@ const authSlice = createSlice({
     },
     loginSuccess: (state, { payload }) => {
       const { name, email, exp } = jwt.decode(payload.token);
-      document.cookie = `token=${payload.token}; expires=${new Date(
-        exp * 1000,
-      )}`;
+      Cookies.set('token', payload.token, {
+        expires: exp * 1000,
+      });
       state.currentUser = { email, name };
       state.loading = false;
     },
