@@ -37,6 +37,8 @@ function checkAccessToProject(req, res, next) {
     })
     .value();
 
+  console.log('[checkAccessToProject] project:', project);
+
   if (!project) {
     res.sendStatus(403);
     return;

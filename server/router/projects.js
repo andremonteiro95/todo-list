@@ -9,10 +9,38 @@ const {
 const router = express.Router();
 
 router.post(
-  '/:projectId/list',
+  '/:projectId/tasks',
   authenticateUser,
   checkAccessToProject,
-  function (req, res) {},
+  function (req, res) {
+    const { email } = req.user;
+    const { projectId: id } = req.params;
+    const { task } = req.body;
+
+    console.log(task);
+
+    if (!task || typeof task !== 'string' || !task.trim()) {
+      res.sendStatus(400);
+      return;
+    }
+
+    const entry = db.get('projects').find({
+      id,
+      owner: email,
+    });
+
+    const list = [
+      ...entry.value().list,
+      {
+        id: uuidv4(),
+        task,
+        done: false,
+      },
+    ];
+
+    entry.assign({ list }).write();
+    res.sendStatus(201);
+  },
 );
 
 router.delete(

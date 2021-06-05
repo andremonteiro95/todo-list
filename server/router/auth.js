@@ -36,7 +36,7 @@ router.post('/signup', function (req, res) {
   const token = generateAccessToken({ email });
 
   res.status(201);
-  res.json(token);
+  res.json({ token });
 });
 
 router.post('/login', function (req, res) {
@@ -67,7 +67,7 @@ router.post('/login', function (req, res) {
   const token = generateAccessToken({ email });
 
   res.status(200);
-  res.json(token);
+  res.json({ token });
 });
 
 module.exports = router;
