@@ -8,6 +8,67 @@ const {
 
 const router = express.Router();
 
+router.delete(
+  '/:projectId/tasks/:taskId',
+  authenticateUser,
+  checkAccessToProject,
+  function (req, res) {
+    const { email } = req.user;
+    const { projectId, taskId } = req.params;
+
+    const entry = db.get('projects').find({
+      id: projectId,
+      owner: email,
+    });
+    const list = [...entry.value().list];
+    const taskIndex = list.findIndex(({ id }) => id === taskId);
+
+    if (taskIndex < 0) {
+      res.sendStatus(400);
+      return;
+    }
+
+    list.splice(taskIndex, 1);
+
+    entry.assign({ list }).write();
+    res.sendStatus(200);
+  },
+);
+
+router.put(
+  '/:projectId/tasks/:taskId',
+  authenticateUser,
+  checkAccessToProject,
+  function (req, res) {
+    const { email } = req.user;
+    const { projectId, taskId } = req.params;
+    const { task } = req.body;
+
+    if (!task || typeof task !== 'string' || !task.trim()) {
+      res.sendStatus(400);
+      return;
+    }
+
+    const entry = db.get('projects').find({
+      id: projectId,
+      owner: email,
+    });
+
+    const list = [...entry.value().list];
+    const taskIndex = list.findIndex(({ id }) => id === taskId);
+
+    if (taskIndex < 0) {
+      res.sendStatus(400);
+      return;
+    }
+
+    list[taskIndex].task = task;
+
+    entry.assign({ list }).write();
+    res.sendStatus(200);
+  },
+);
+
 router.post(
   '/:projectId/tasks',
   authenticateUser,
@@ -16,8 +77,6 @@ router.post(
     const { email } = req.user;
     const { projectId: id } = req.params;
     const { task } = req.body;
-
-    console.log(task);
 
     if (!task || typeof task !== 'string' || !task.trim()) {
       res.sendStatus(400);
