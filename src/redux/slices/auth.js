@@ -23,6 +23,9 @@ const authSlice = createSlice({
   name: 'auth',
   initialState,
   reducers: {
+    clearAuthError: (state) => {
+      state.error = undefined;
+    },
     login: (state) => {
       state.loading = true;
     },
@@ -33,6 +36,7 @@ const authSlice = createSlice({
       });
       state.currentUser = { email, name };
       state.loading = false;
+      state.error = undefined;
     },
     loginError: (state, { payload }) => {
       state.error = payload;
@@ -52,6 +56,7 @@ const authSlice = createSlice({
       });
       state.currentUser = { email, name };
       state.loading = false;
+      state.error = undefined;
     },
     signupError: (state, { payload }) => {
       state.error = payload;
@@ -61,6 +66,7 @@ const authSlice = createSlice({
 });
 
 export const {
+  clearAuthError,
   login,
   loginError,
   loginSuccess,

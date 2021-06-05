@@ -2,9 +2,11 @@ import { Button, TextField, Typography, Link } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import React from 'react';
 import { useForm } from 'react-hook-form';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Link as RouterLink } from 'react-router-dom';
-import { signup } from '../../redux/slices/auth';
+import { VALIDATION_REGEXS } from '../../constants';
+import { getAuthError } from '../../redux/selectors';
+import { clearAuthError, signup } from '../../redux/slices/auth';
 import AuthContainer from './AuthContainer';
 
 const useStyles = makeStyles((theme) => ({
@@ -21,10 +23,20 @@ function SignUp() {
   const {
     register,
     handleSubmit,
-    watch,
     formState: { errors },
+    setError,
   } = useForm();
+
+  const authError = useSelector(getAuthError);
   const dispatch = useDispatch();
+
+  if (authError) {
+    setError('email', {
+      type: 'manual',
+      message: 'This email is already in use',
+    });
+    dispatch(clearAuthError());
+  }
 
   const onSubmit = (data) => {
     dispatch(signup(data));
@@ -45,7 +57,15 @@ function SignUp() {
           label="Name"
           autoComplete="name"
           autoFocus
-          {...register('name', { required: true })}
+          {...register('name', {
+            required: true,
+            pattern: VALIDATION_REGEXS.name,
+          })}
+          error={!!errors.name}
+          helperText={
+            !!errors.name &&
+            'The name introduced is invalid. Check if there is any whitespace in front of your name.'
+          }
         />
         <TextField
           variant="outlined"
@@ -56,7 +76,18 @@ function SignUp() {
           label="Email Address"
           autoComplete="email"
           autoFocus
-          {...register('email', { required: true })}
+          {...register('email', {
+            required: true,
+            pattern: VALIDATION_REGEXS.email,
+          })}
+          error={!!errors.email || !!authError}
+          helperText={
+            errors.email?.type === 'pattern'
+              ? 'The email introduced is invalid.'
+              : errors.email?.type === 'manual'
+              ? 'This email is already in use.'
+              : null
+          }
         />
         <TextField
           variant="outlined"
@@ -67,7 +98,16 @@ function SignUp() {
           type="password"
           id="password"
           autoComplete="current-password"
-          {...register('password', { required: true })}
+          {...register('password', {
+            required: true,
+            minLength: 8,
+            pattern: VALIDATION_REGEXS.password,
+          })}
+          error={!!errors.password}
+          helperText={
+            !!errors.password &&
+            'Your password must contain at least 8 characters, and must include uppercase and lowercase letters, digits, and special characters.'
+          }
         />
         <Button
           type="submit"
