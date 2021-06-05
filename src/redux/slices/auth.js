@@ -38,11 +38,19 @@ const authSlice = createSlice({
       state.error = payload;
       state.loading = false;
     },
+    logout: (state) => {
+      state.currentUser = undefined;
+      Cookies.remove('token');
+    },
     signup: (state) => {
       state.loading = true;
     },
     signupSuccess: (state, { payload }) => {
-      state.currentUser = payload;
+      const { name, email, exp } = jwt.decode(payload.token);
+      Cookies.set('token', payload.token, {
+        expires: exp * 1000,
+      });
+      state.currentUser = { email, name };
       state.loading = false;
     },
     signupError: (state, { payload }) => {
@@ -56,6 +64,7 @@ export const {
   login,
   loginError,
   loginSuccess,
+  logout,
   signup,
   signupError,
   signupSuccess,

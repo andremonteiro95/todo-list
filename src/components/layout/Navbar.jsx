@@ -1,6 +1,7 @@
-import { AppBar, Button, Toolbar, Typography } from '@material-ui/core';
+import { AppBar, Toolbar, Typography } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import React from 'react';
+import NavbarButton from './NavbarButton';
 
 const useStyles = makeStyles(() => ({
   title: {
@@ -17,7 +18,7 @@ function Navbar() {
         <Typography variant="h6" className={classes.title}>
           TODO List
         </Typography>
-        <Button color="inherit">Login</Button>
+        <NavbarButton />
       </Toolbar>
     </AppBar>
   );

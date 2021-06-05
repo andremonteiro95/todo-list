@@ -20,9 +20,9 @@ function* loginSaga({ payload }) {
   }
 }
 
-function* signupSaga() {
+function* signupSaga({ payload }) {
   try {
-    const data = yield apiGet(API_ENDPOINTS.signup);
+    const data = yield apiPost(API_ENDPOINTS.signup, payload);
     yield put(signupSuccess(data));
   } catch (err) {
     yield put(signupError(err.message));

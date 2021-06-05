@@ -27,7 +27,6 @@ function Login() {
   const dispatch = useDispatch();
 
   const onSubmit = (data) => {
-    console.log(data);
     dispatch(login(data));
   };
 
@@ -41,6 +40,7 @@ function Login() {
           variant="outlined"
           margin="normal"
           fullWidth
+          required
           id="email"
           label="Email Address"
           autoComplete="email"
@@ -51,6 +51,7 @@ function Login() {
           variant="outlined"
           margin="normal"
           fullWidth
+          required
           label="Password"
           type="password"
           id="password"
