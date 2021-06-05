@@ -3,14 +3,14 @@ import { useSelector } from 'react-redux';
 import { Redirect, Route } from 'react-router-dom';
 import { getIsAuthenticated } from '../redux/selectors';
 
-function PublicRoute(props) {
+function PrivateRoute(props) {
   const isAuthenticated = useSelector(getIsAuthenticated);
 
-  if (isAuthenticated) {
-    return <Redirect to="/" />;
+  if (!isAuthenticated) {
+    return <Redirect to="/login" />;
   }
 
   return <Route {...props} />;
 }
 
-export default PublicRoute;
+export default PrivateRoute;

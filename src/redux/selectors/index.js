@@ -1,1 +1,1 @@
-export const getIsAuthenticated = (state) => !!state.auth.currentUser;
+export const getIsAuthenticated = (state) => !!state.authState.currentUser;

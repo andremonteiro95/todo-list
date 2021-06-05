@@ -1,10 +1,12 @@
 import { CssBaseline } from '@material-ui/core';
 import { Provider } from 'react-redux';
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import { BrowserRouter as Router, Switch } from 'react-router-dom';
 import store from './redux';
 import Login from './components/auth/Login';
 import SignUp from './components/auth/SignUp';
 import Navbar from './components/layout/Navbar';
+import PublicRoute from './router/PublicRoute';
+import PrivateRoute from './router/PrivateRoute';
 
 function App() {
   return (
@@ -13,12 +15,13 @@ function App() {
         <CssBaseline />
         <Navbar />
         <Switch>
-          <Route path="/login">
+          <PublicRoute path="/login">
             <Login />
-          </Route>
-          <Route path="/signup">
+          </PublicRoute>
+          <PublicRoute path="/signup">
             <SignUp />
-          </Route>
+          </PublicRoute>
+          <PrivateRoute path="/">Olá</PrivateRoute>
         </Switch>
       </Router>
     </Provider>
