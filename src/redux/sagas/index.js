@@ -1,6 +1,5 @@
-import axios from 'axios';
-import { all, put, takeLatest } from 'redux-saga/effects';
-import { apiGet, apiPost } from '../../api';
+import { all, delay, put, takeLatest } from 'redux-saga/effects';
+import { apiPost } from '../../api';
 import { API_ENDPOINTS } from '../../constants';
 import {
   login,
@@ -13,6 +12,9 @@ import {
 
 function* loginSaga({ payload }) {
   try {
+    if (process.env.NODE_ENV !== 'production') {
+      yield delay(1000); // For presentation purposes
+    }
     const data = yield apiPost(API_ENDPOINTS.login, payload);
     yield put(loginSuccess(data));
   } catch (err) {
@@ -22,6 +24,9 @@ function* loginSaga({ payload }) {
 
 function* signupSaga({ payload }) {
   try {
+    if (process.env.NODE_ENV !== 'production') {
+      yield delay(1000); // For presentation purposes
+    }
     const data = yield apiPost(API_ENDPOINTS.signup, payload);
     yield put(signupSuccess(data));
   } catch (err) {

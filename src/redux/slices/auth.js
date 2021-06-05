@@ -28,6 +28,7 @@ const authSlice = createSlice({
     },
     login: (state) => {
       state.loading = true;
+      state.error = undefined;
     },
     loginSuccess: (state, { payload }) => {
       const { name, email, exp } = jwt.decode(payload.token);
@@ -36,7 +37,6 @@ const authSlice = createSlice({
       });
       state.currentUser = { email, name };
       state.loading = false;
-      state.error = undefined;
     },
     loginError: (state, { payload }) => {
       state.error = payload;
@@ -48,6 +48,7 @@ const authSlice = createSlice({
     },
     signup: (state) => {
       state.loading = true;
+      state.error = undefined;
     },
     signupSuccess: (state, { payload }) => {
       const { name, email, exp } = jwt.decode(payload.token);
@@ -56,7 +57,6 @@ const authSlice = createSlice({
       });
       state.currentUser = { email, name };
       state.loading = false;
-      state.error = undefined;
     },
     signupError: (state, { payload }) => {
       state.error = payload;

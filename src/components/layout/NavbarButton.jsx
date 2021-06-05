@@ -15,7 +15,7 @@ function NavbarButton() {
   if (!currentUser) {
     return (
       <Button component={Link} to="/login" color="inherit">
-        Login
+        Sign in
       </Button>
     );
   }
@@ -51,7 +51,7 @@ function NavbarButton() {
         open={!!anchorElem}
         onClose={handleClose}
       >
-        <MenuItem onClick={handleLogout}>Logout</MenuItem>
+        <MenuItem onClick={handleLogout}>Sign out</MenuItem>
       </Menu>
     </>
   );

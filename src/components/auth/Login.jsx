@@ -1,9 +1,18 @@
-import { Button, TextField, Typography, Link } from '@material-ui/core';
+import {
+  Button,
+  TextField,
+  Typography,
+  Link,
+  FormHelperText,
+  CircularProgress,
+} from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import React from 'react';
 import { useForm } from 'react-hook-form';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Link as RouterLink } from 'react-router-dom';
+import { VALIDATION_REGEXS } from '../../constants';
+import { getAuthError, getIsAuthLoading } from '../../redux/selectors';
 import { login } from '../../redux/slices/auth';
 import AuthContainer from './AuthContainer';
 
@@ -21,10 +30,12 @@ function Login() {
   const {
     register,
     handleSubmit,
-    watch,
     formState: { errors },
   } = useForm();
+
   const dispatch = useDispatch();
+  const authError = useSelector(getAuthError);
+  const isAuthLoading = useSelector(getIsAuthLoading);
 
   const onSubmit = (data) => {
     dispatch(login(data));
@@ -45,7 +56,15 @@ function Login() {
           label="Email Address"
           autoComplete="email"
           autoFocus
-          {...register('email', { required: true })}
+          {...register('email', {
+            required: true,
+            pattern: VALIDATION_REGEXS.email,
+          })}
+          error={!!errors.email}
+          helperText={
+            errors.email?.type === 'pattern' &&
+            'The email introduced is invalid.'
+          }
         />
         <TextField
           variant="outlined"
@@ -62,14 +81,23 @@ function Login() {
           control={<Checkbox value="remember" color="primary" />}
           label="Remember me"
         /> */}
+        {authError && (
+          <FormHelperText error>
+            Failed to sign in, please review your credentials.
+          </FormHelperText>
+        )}
         <Button
           type="submit"
           fullWidth
           variant="contained"
           color="primary"
           className={classes.submit}
+          endIcon={
+            isAuthLoading && <CircularProgress color="inherit" size={24} />
+          }
+          disabled={isAuthLoading}
         >
-          Log in
+          {!isAuthLoading && 'Sign in'}
         </Button>
       </form>
       <Link

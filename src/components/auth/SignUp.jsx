@@ -1,11 +1,17 @@
-import { Button, TextField, Typography, Link } from '@material-ui/core';
+import {
+  Button,
+  TextField,
+  Typography,
+  Link,
+  CircularProgress,
+} from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link as RouterLink } from 'react-router-dom';
 import { VALIDATION_REGEXS } from '../../constants';
-import { getAuthError } from '../../redux/selectors';
+import { getAuthError, getIsAuthLoading } from '../../redux/selectors';
 import { clearAuthError, signup } from '../../redux/slices/auth';
 import AuthContainer from './AuthContainer';
 
@@ -27,8 +33,9 @@ function SignUp() {
     setError,
   } = useForm();
 
-  const authError = useSelector(getAuthError);
   const dispatch = useDispatch();
+  const authError = useSelector(getAuthError);
+  const isAuthLoading = useSelector(getIsAuthLoading);
 
   if (authError) {
     setError('email', {
@@ -115,8 +122,12 @@ function SignUp() {
           variant="contained"
           color="primary"
           className={classes.submit}
+          endIcon={
+            isAuthLoading && <CircularProgress color="inherit" size={24} />
+          }
+          disabled={isAuthLoading}
         >
-          Sign Up
+          {!isAuthLoading && 'Sign up'}
         </Button>
       </form>
       <Link
