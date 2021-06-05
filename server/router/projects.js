@@ -1,57 +1,58 @@
 const express = require('express');
 const { v4: uuidv4 } = require('uuid');
 const db = require('../db');
-const { authenticateUser } = require('../middleware/auth');
+const {
+  authenticateUser,
+  checkAccessToProject,
+} = require('../middleware/auth');
 
 const router = express.Router();
 
-router.delete('/:id', authenticateUser, function (req, res) {
-  const { email } = req.user;
-  const { id } = req.params;
+router.post(
+  '/:projectId/list',
+  authenticateUser,
+  checkAccessToProject,
+  function (req, res) {},
+);
 
-  const project = db
-    .get('projects')
-    .find({
-      id,
-      owner: email,
-    })
-    .value();
+router.delete(
+  '/:projectId',
+  authenticateUser,
+  checkAccessToProject,
+  function (req, res) {
+    const { projectId: id } = req.params;
 
-  if (!project) {
-    res.sendStatus(403);
-    return;
-  }
+    db.get('projects').remove({ id }).write();
+    res.sendStatus(200);
+  },
+);
 
-  db.get('projects').remove({ id }).write();
-  res.sendStatus(200);
-});
+router.put(
+  '/:projectId',
+  authenticateUser,
+  checkAccessToProject,
+  function (req, res) {
+    const { email } = req.user;
+    const { projectId: id } = req.params;
 
-router.put('/:id', authenticateUser, function (req, res) {
-  const { email } = req.user;
-  const { id } = req.params;
+    const { name } = req.body;
+    if (!name || typeof name !== 'string' || !name.trim()) {
+      res.status(400);
+      res.json({ error: 'Missing information.' });
+      return;
+    }
 
-  const project = db.get('projects').find({
-    id,
-    owner: email,
-  });
-  const value = project.value();
+    db.get('projects')
+      .find({
+        id,
+        owner: email,
+      })
+      .assign({ name })
+      .write();
 
-  if (!value) {
-    res.sendStatus(403);
-    return;
-  }
-
-  const { name } = req.body;
-  if (!name || typeof name !== 'string' || !name.trim()) {
-    res.status(400);
-    res.json({ error: 'Missing information.' });
-    return;
-  }
-
-  project.assign({ name }).write();
-
-  res.sendStatus(200);
-});
+    res.sendStatus(200);
+  },
+);
 
 router.post('/', authenticateUser, function (req, res) {
   const { email } = req.user;

@@ -1,3 +1,4 @@
+const db = require('../db');
 const { verifyAccessToken } = require('../utils/auth');
 
 function authenticateUser(req, res, next) {
@@ -7,8 +8,6 @@ function authenticateUser(req, res, next) {
   if (token == null) {
     return res.sendStatus(401);
   }
-
-  console.log(authHeader);
 
   let payload;
   try {
@@ -21,4 +20,29 @@ function authenticateUser(req, res, next) {
   next();
 }
 
-module.exports = { authenticateUser };
+function checkAccessToProject(req, res, next) {
+  const { email } = req.user;
+  const { projectId: id } = req.params;
+
+  if (!id) {
+    res.sendStatus(400);
+    return;
+  }
+
+  const project = db
+    .get('projects')
+    .find({
+      id,
+      owner: email,
+    })
+    .value();
+
+  if (!project) {
+    res.sendStatus(403);
+    return;
+  }
+
+  next();
+}
+
+module.exports = { authenticateUser, checkAccessToProject };
