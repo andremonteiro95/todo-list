@@ -33,7 +33,7 @@ router.post('/signup', function (req, res) {
     })
     .write();
 
-  const token = generateAccessToken({ email });
+  const token = generateAccessToken({ email, name });
 
   res.status(201);
   res.json({ token });
@@ -64,7 +64,7 @@ router.post('/login', function (req, res) {
     return;
   }
 
-  const token = generateAccessToken({ email });
+  const token = generateAccessToken({ email: user.email, name: user.name });
 
   res.status(200);
   res.json({ token });

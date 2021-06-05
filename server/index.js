@@ -1,5 +1,6 @@
 const compression = require('compression');
 const cookieParser = require('cookie-parser');
+const cors = require('cors');
 const express = require('express');
 const path = require('path');
 const dotenv = require('dotenv');
@@ -7,12 +8,19 @@ const apiRouter = require('./router');
 
 dotenv.config();
 
+const isProduction = process.env.NODE_ENV === 'production';
+
 const app = express();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser());
 app.use(compression());
+app.use(cookieParser());
+app.use(
+  cors({
+    origin: isProduction ? false : '*',
+  }),
+);
 
 app.use(express.static(path.join(__dirname, '../build')));
 app.use('/api', apiRouter);

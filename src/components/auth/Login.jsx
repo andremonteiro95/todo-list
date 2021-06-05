@@ -1,17 +1,16 @@
-import {
-  Button,
-  Checkbox,
-  FormControlLabel,
-  TextField,
-  Typography,
-} from '@material-ui/core';
+import { Button, TextField, Typography } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import React from 'react';
 import { useForm } from 'react-hook-form';
+import { useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
+import { login } from '../../redux/slices/auth';
 import AuthContainer from './AuthContainer';
 
 const useStyles = makeStyles((theme) => ({
+  submit: {
+    marginTop: theme.spacing(1),
+  },
   link: {
     marginTop: theme.spacing(2),
   },
@@ -25,8 +24,12 @@ function Login() {
     watch,
     formState: { errors },
   } = useForm();
+  const dispatch = useDispatch();
 
-  const onSubmit = () => {};
+  const onSubmit = (data) => {
+    console.log(data);
+    dispatch(login(data));
+  };
 
   return (
     <AuthContainer>
@@ -37,29 +40,27 @@ function Login() {
         <TextField
           variant="outlined"
           margin="normal"
-          required
           fullWidth
           id="email"
           label="Email Address"
-          name="email"
           autoComplete="email"
           autoFocus
+          {...register('email', { required: true })}
         />
         <TextField
           variant="outlined"
           margin="normal"
-          required
           fullWidth
-          name="password"
           label="Password"
           type="password"
           id="password"
           autoComplete="current-password"
+          {...register('password', { required: true })}
         />
-        <FormControlLabel
+        {/* <FormControlLabel
           control={<Checkbox value="remember" color="primary" />}
           label="Remember me"
-        />
+        /> */}
         <Button
           type="submit"
           fullWidth
@@ -67,7 +68,7 @@ function Login() {
           color="primary"
           className={classes.submit}
         >
-          Sign In
+          Log in
         </Button>
       </form>
       <Link className={classes.link} href="#" variant="body2">
