@@ -42,9 +42,9 @@ router.put(
   function (req, res) {
     const { email } = req.user;
     const { projectId, taskId } = req.params;
-    const { task } = req.body;
+    const { done, task } = req.body;
 
-    if (!task || typeof task !== 'string' || !task.trim()) {
+    if (task != null && (typeof task !== 'string' || !task.trim())) {
       res.sendStatus(400);
       return;
     }
@@ -62,7 +62,8 @@ router.put(
       return;
     }
 
-    list[taskIndex].task = task;
+    list[taskIndex].done = done != null ? done : list[taskIndex].task;
+    list[taskIndex].task = task || list[taskIndex].task;
 
     entry.assign({ list }).write();
     res.sendStatus(200);
