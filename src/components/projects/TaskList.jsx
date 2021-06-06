@@ -8,6 +8,10 @@ function TaskList(props) {
   const { projectId } = props;
   const tasks = useSelector(getTasksByProjectId(projectId));
 
+  if (tasks.length === 0) {
+    return <p>The list is empty.</p>;
+  }
+
   const getList = (tasksDone) => {
     const filteredTasks = tasks.filter(({ done }) => !!done === tasksDone);
 
