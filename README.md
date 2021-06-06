@@ -21,3 +21,11 @@ Runs the server in development mode, on port 3001.
 ### `npm run prod`
 
 Builds the frontend app for production to the `build` folder, and starts the server in production mode.
+
+### `npm run docker-build`
+
+Builds the project's docker image.
+
+### `npm run docker-start`
+
+Runs the project's docker image.
