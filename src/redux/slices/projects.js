@@ -23,11 +23,26 @@ const projectsSlice = createSlice({
       state.error = payload;
       state.loading = false;
     },
+    createProject: (state) => {
+      state.error = undefined;
+      state.loading = true;
+    },
+    createProjectSuccess: (state, { payload }) => {
+      state.projects.push(payload);
+      state.loading = false;
+    },
+    createProjectError: (state, { payload }) => {
+      state.error = payload;
+      state.loading = false;
+    },
   },
 });
 
 export const {
   clearProjects,
+  createProject,
+  createProjectError,
+  createProjectSuccess,
   loadProjects,
   loadProjectsError,
   loadProjectsSuccess,

@@ -152,16 +152,23 @@ router.post('/', authenticateUser, function (req, res) {
     return;
   }
 
+  const id = uuidv4();
+
   db.get('projects')
     .push({
-      id: uuidv4(),
+      id,
       name,
       owner: email,
-      list: [],
+      tasks: [],
     })
     .write();
 
-  res.sendStatus(201);
+  res.status(201);
+  res.json({
+    id,
+    name,
+    tasks: [],
+  });
 });
 
 router.get('/', authenticateUser, function (req, res) {
@@ -171,10 +178,10 @@ router.get('/', authenticateUser, function (req, res) {
     .get('projects')
     .filter({ owner: email })
     .value()
-    .map(({ id, name, list }) => ({
+    .map(({ id, name, tasks }) => ({
       id,
       name,
-      list,
+      tasks,
     }));
 
   res.status(200);

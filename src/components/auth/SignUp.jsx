@@ -27,9 +27,9 @@ const useStyles = makeStyles((theme) => ({
 function SignUp() {
   const classes = useStyles();
   const {
-    register,
-    handleSubmit,
     formState: { errors },
+    handleSubmit,
+    register,
     setError,
   } = useForm();
 
@@ -122,12 +122,10 @@ function SignUp() {
           variant="contained"
           color="primary"
           className={classes.submit}
-          endIcon={
-            isAuthLoading && <CircularProgress color="inherit" size={24} />
-          }
           disabled={isAuthLoading}
         >
           {!isAuthLoading && 'Sign up'}
+          {isAuthLoading && <CircularProgress color="inherit" size={24} />}
         </Button>
       </form>
       <Link

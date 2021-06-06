@@ -1,5 +1,4 @@
 import {
-  Box,
   Button,
   Card,
   CardActions,
@@ -9,11 +8,12 @@ import {
   IconButton,
   makeStyles,
   TextField,
-  Typography,
 } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
 import React from 'react';
+import { useSelector } from 'react-redux';
+import { getIsProjectsLoading, getProjectById } from '../../redux/selectors';
 import TaskList from './TaskList';
 
 const useStyles = makeStyles(() => ({
@@ -22,31 +22,50 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-function ProjectGridItem() {
+function ProjectGridItem(props) {
+  const { projectId } = props;
   const classes = useStyles();
+  const project = useSelector(getProjectById(projectId));
+  const isProjectsLoading = useSelector(getIsProjectsLoading);
+
+  const onDeleteClick = () => {};
 
   return (
     <Grid item xs={12} sm={6} md={4}>
       <Card>
         <CardHeader
-          title="Todo List"
+          title={project.name}
           action={
             <>
-              <IconButton aria-label="edit" color="primary" size="small">
+              <IconButton
+                color="primary"
+                size="small"
+                disabled={isProjectsLoading}
+              >
                 <EditIcon />
               </IconButton>
-              <IconButton aria-label="delete" color="primary" size="small">
+              <IconButton
+                color="primary"
+                size="small"
+                disabled={isProjectsLoading}
+                onClick={onDeleteClick}
+              >
                 <DeleteIcon />
               </IconButton>
             </>
           }
-        ></CardHeader>
+        />
         <CardContent>
           <TaskList />
         </CardContent>
         <CardActions className={classes.cardActions}>
           <TextField fullWidth label="Task" variant="outlined" size="small" />
-          <Button type="submit" variant="contained" color="primary">
+          <Button
+            type="submit"
+            variant="contained"
+            color="primary"
+            disabled={isProjectsLoading}
+          >
             Add
           </Button>
         </CardActions>

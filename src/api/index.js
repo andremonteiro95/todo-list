@@ -9,7 +9,7 @@ function getAuthorizationHeaders() {
   };
 }
 
-export function apiGet(url, useAuth = false) {
+export function apiGet(url, useAuth) {
   return axios({
     baseURL: API_BASE_URL,
     url,
@@ -17,11 +17,12 @@ export function apiGet(url, useAuth = false) {
   }).then(({ data }) => data);
 }
 
-export function apiPost(url, data) {
+export function apiPost(url, data, useAuth) {
   return axios({
     method: 'POST',
     baseURL: API_BASE_URL,
     url,
+    headers: useAuth ? getAuthorizationHeaders() : undefined,
     data,
   }).then(({ data }) => data);
 }
