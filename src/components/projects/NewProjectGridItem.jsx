@@ -66,6 +66,7 @@ function NewProjectGridItem() {
                 margin="normal"
                 label="Project name"
                 variant="outlined"
+                color="secondary"
                 size="small"
                 {...register('name', {
                   required: true,
@@ -79,7 +80,7 @@ function NewProjectGridItem() {
                 disabled={isProjectsLoading}
                 fullWidth
                 variant="contained"
-                color="primary"
+                color="secondary"
               >
                 {!isProjectsLoading && 'Create Project'}
                 {isProjectsLoading && (
