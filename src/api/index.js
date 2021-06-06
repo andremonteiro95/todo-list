@@ -1,10 +1,19 @@
 import axios from 'axios';
+import Cookies from 'js-cookie';
 import { API_BASE_URL } from '../constants';
 
-export function apiGet(url) {
+function getAuthorizationHeaders() {
+  const token = Cookies.get('token');
+  return {
+    Authorization: `Bearer ${token}`,
+  };
+}
+
+export function apiGet(url, useAuth = false) {
   return axios({
     baseURL: API_BASE_URL,
     url,
+    headers: useAuth ? getAuthorizationHeaders() : undefined,
   }).then(({ data }) => data);
 }
 

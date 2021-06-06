@@ -26,7 +26,7 @@ function NewProjectGridItem() {
       <Card>
         <Box marginY={4}>
           <CardContent className={classes.cardContent}>
-            <Typography textAlign="center" variant="h5" component="h3">
+            <Typography variant="h5" component="h3">
               Create a new project
             </Typography>
             <form>
