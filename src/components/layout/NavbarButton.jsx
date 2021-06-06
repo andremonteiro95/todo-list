@@ -1,6 +1,7 @@
 import Button from '@material-ui/core/Button';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
@@ -41,6 +42,7 @@ function NavbarButton() {
         color="inherit"
         onClick={handleClick}
         ref={anchorElem}
+        endIcon={<ExpandMoreIcon />}
       >
         {currentUser.name}
       </Button>

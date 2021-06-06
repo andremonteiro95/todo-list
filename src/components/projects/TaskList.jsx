@@ -6,6 +6,7 @@ import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import ListItemText from '@material-ui/core/ListItemText';
 import Checkbox from '@material-ui/core/Checkbox';
 import IconButton from '@material-ui/core/IconButton';
+import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -69,7 +70,10 @@ function TaskList(props) {
               </DateTooltip>
               {!done && (
                 <ListItemSecondaryAction>
-                  <IconButton edge="end" onClick={onDelete(id)}>
+                  <IconButton onClick={onDelete(id)} size="small">
+                    <EditIcon />
+                  </IconButton>
+                  <IconButton edge="end" onClick={onDelete(id)} size="small">
                     <DeleteIcon />
                   </IconButton>
                 </ListItemSecondaryAction>

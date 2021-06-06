@@ -113,8 +113,6 @@ router.post(
       created: new Date(),
     };
 
-    console.log(entry.value());
-
     const tasks = [...entry.value().tasks, newItem];
 
     entry.assign({ tasks }).write();
