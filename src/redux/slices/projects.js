@@ -83,15 +83,14 @@ const projectsSlice = createSlice({
       state.error = undefined;
       state.loading = true;
     },
-    toggleTaskStatusSuccess: (state, { payload: { projectId, taskId } }) => {
+    toggleTaskStatusSuccess: (state, { payload: { projectId, task } }) => {
       const projectIndex = state.projects.findIndex(
         ({ id }) => id === projectId,
       );
       const taskIndex = state.projects[projectIndex].tasks.findIndex(
-        ({ id }) => id === taskId,
+        ({ id }) => id === task.id,
       );
-      state.projects[projectIndex].tasks[taskIndex].done =
-        !state.projects[projectIndex].tasks[taskIndex].done;
+      state.projects[projectIndex].tasks[taskIndex] = task;
       state.loading = false;
     },
     toggleTaskStatusError: (state, { payload }) => {

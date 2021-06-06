@@ -1,10 +1,4 @@
-import {
-  Box,
-  Button,
-  CardActions,
-  makeStyles,
-  TextField,
-} from '@material-ui/core';
+import { Button, CardActions, makeStyles, TextField } from '@material-ui/core';
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
@@ -32,7 +26,7 @@ function AddTaskCardActions(props) {
   } = useForm();
 
   const getHelperText = () => {
-    switch (errors.task?.type) {
+    switch (errors.description?.type) {
       case 'required':
         return 'The task description is required.';
       case 'pattern':
@@ -42,8 +36,8 @@ function AddTaskCardActions(props) {
     }
   };
 
-  const onSubmit = ({ task }) => {
-    dispatch(addTask({ projectId, task }));
+  const onSubmit = ({ description }) => {
+    dispatch(addTask({ projectId, description }));
     reset();
   };
 
@@ -55,11 +49,11 @@ function AddTaskCardActions(props) {
           label="Task"
           variant="outlined"
           size="small"
-          {...register('task', {
+          {...register('description', {
             required: true,
             pattern: VALIDATION_REGEXS.noWhitespaceAtBeginning,
           })}
-          error={!!errors.task}
+          error={!!errors.description}
           helperText={getHelperText()}
         />
         <Button

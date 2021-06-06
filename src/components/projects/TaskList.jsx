@@ -13,6 +13,14 @@ import {
   getTasksByProjectId,
 } from '../../redux/selectors';
 import { deleteTask, toggleTaskStatus } from '../../redux/slices/projects';
+import { Tooltip, withStyles } from '@material-ui/core';
+import { formatDate } from '../../utils/date';
+
+const DateTooltip = withStyles((theme) => ({
+  tooltip: {
+    fontSize: 11,
+  },
+}))(Tooltip);
 
 function TaskList(props) {
   const { projectId } = props;
@@ -31,29 +39,53 @@ function TaskList(props) {
     dispatch(toggleTaskStatus({ projectId, taskId }));
   };
 
+  const getList = (tasksDone) => {
+    const filteredTasks = tasks.filter(({ done }) => !!done === tasksDone);
+
+    if (filteredTasks.length === 0) {
+      return null;
+    }
+
+    const getTooltipTitle = ({ created, done }) =>
+      done
+        ? `Finished at ${formatDate(done)}`
+        : `Created at ${formatDate(created)}`;
+
+    return (
+      <List subheader={tasksDone ? 'Done' : 'To do'}>
+        {filteredTasks.map(({ created, description, done, id }) => {
+          return (
+            <ListItem key={id} dense button onClick={onToggle(id)}>
+              <ListItemIcon>
+                <Checkbox
+                  edge="start"
+                  checked={!!done}
+                  disableRipple
+                  color="primary"
+                />
+              </ListItemIcon>
+              <DateTooltip title={getTooltipTitle({ created, done })}>
+                <ListItemText primary={description} />
+              </DateTooltip>
+              {!done && (
+                <ListItemSecondaryAction>
+                  <IconButton edge="end" onClick={onDelete(id)}>
+                    <DeleteIcon />
+                  </IconButton>
+                </ListItemSecondaryAction>
+              )}
+            </ListItem>
+          );
+        })}
+      </List>
+    );
+  };
+
   return (
-    <List>
-      {tasks.map(({ done, id, task }) => {
-        return (
-          <ListItem key={id} dense button onClick={onToggle(id)}>
-            <ListItemIcon>
-              <Checkbox
-                edge="start"
-                checked={done}
-                disableRipple
-                color="primary"
-              />
-            </ListItemIcon>
-            <ListItemText primary={task} />
-            <ListItemSecondaryAction>
-              <IconButton edge="end" onClick={onDelete(id)}>
-                <DeleteIcon />
-              </IconButton>
-            </ListItemSecondaryAction>
-          </ListItem>
-        );
-      })}
-    </List>
+    <>
+      {getList(false)}
+      {getList(true)}
+    </>
   );
 }
 

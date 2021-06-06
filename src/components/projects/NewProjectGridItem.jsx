@@ -55,15 +55,14 @@ function NewProjectGridItem() {
     <Grid item xs={12} sm={6} md={4}>
       <Card>
         <Box marginY={4}>
-          <CardContent className={classes.cardContent}>
-            <Typography variant="h5" component="h3">
-              Create a new project
-            </Typography>
-            <form onSubmit={handleSubmit(onSubmit)}>
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <CardContent className={classes.cardContent}>
+              <Typography variant="h5" component="h3">
+                Create a new project
+              </Typography>
               <TextField
                 fullWidth
                 required
-                disabled={isProjectsLoading}
                 margin="normal"
                 label="Project name"
                 variant="outlined"
@@ -87,8 +86,8 @@ function NewProjectGridItem() {
                   <CircularProgress color="inherit" size={24} />
                 )}
               </Button>
-            </form>
-          </CardContent>
+            </CardContent>
+          </form>
         </Box>
       </Card>
     </Grid>

@@ -1,4 +1,5 @@
 import { all, delay, put, select, takeLatest } from 'redux-saga/effects';
+import { createSelector } from '@reduxjs/toolkit';
 import { apiDelete, apiGet, apiPost, apiPut } from '../../api';
 import { API_ENDPOINTS } from '../../constants';
 import { getProjectById } from '../selectors';
@@ -59,16 +60,20 @@ function* loadProjectsSaga() {
   }
 }
 
-function* addTaskSaga({ payload: { projectId, task } }) {
+function* addTaskSaga({ payload: { projectId, description } }) {
   try {
     if (process.env.NODE_ENV !== 'production') {
       yield delay(1000); // For presentation purposes
     }
-    const data = yield apiPost(API_ENDPOINTS.tasks(projectId), { task }, true);
+    const task = yield apiPost(
+      API_ENDPOINTS.tasks(projectId),
+      { description },
+      true,
+    );
     yield put(
       addTaskSuccess({
         projectId,
-        task: data,
+        task,
       }),
     );
   } catch (err) {
@@ -95,14 +100,13 @@ function* deleteTaskSaga({ payload: { projectId, taskId } }) {
 
 function* toggleTaskStatusSaga({ payload: { projectId, taskId } }) {
   try {
-    if (process.env.NODE_ENV !== 'production') {
-      yield delay(1000); // For presentation purposes
-    }
-    const { done } = yield select(getProjectById(projectId), (project) => {
-      project.tasks.find(({ id }) => id === taskId);
-    });
+    const { done } = yield select(
+      createSelector(getProjectById(projectId), (project) =>
+        project.tasks.find(({ id }) => id === taskId),
+      ),
+    );
 
-    yield apiPut(
+    const newTask = yield apiPut(
       API_ENDPOINTS.tasks(projectId) + `/${taskId}`,
       { done: !done },
       true,
@@ -110,7 +114,7 @@ function* toggleTaskStatusSaga({ payload: { projectId, taskId } }) {
     yield put(
       toggleTaskStatusSuccess({
         projectId,
-        taskId,
+        task: newTask,
       }),
     );
   } catch (err) {

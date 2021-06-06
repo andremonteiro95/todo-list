@@ -42,9 +42,12 @@ router.put(
   function (req, res) {
     const { email } = req.user;
     const { projectId, taskId } = req.params;
-    const { done, task } = req.body;
+    const { description, done } = req.body;
 
-    if (task != null && (typeof task !== 'string' || !task.trim())) {
+    if (
+      description != null &&
+      (typeof description !== 'string' || !description.trim())
+    ) {
       res.sendStatus(400);
       return;
     }
@@ -63,8 +66,15 @@ router.put(
     }
 
     const newTask = { ...tasks[taskIndex] };
-    newTask.done = done != null ? done : newTask.task;
-    newTask.task = task || newTask.task;
+    newTask.description = description || newTask.description;
+    if (done != null) {
+      if (done && !newTask.done) {
+        newTask.done = new Date();
+      }
+      if (!done) {
+        newTask.done = undefined;
+      }
+    }
 
     tasks[taskIndex] = newTask;
 
@@ -81,9 +91,13 @@ router.post(
   function (req, res) {
     const { email } = req.user;
     const { projectId } = req.params;
-    const { task } = req.body;
+    const { description } = req.body;
 
-    if (!task || typeof task !== 'string' || !task.trim()) {
+    if (
+      !description ||
+      typeof description !== 'string' ||
+      !description.trim()
+    ) {
       res.sendStatus(400);
       return;
     }
@@ -95,8 +109,8 @@ router.post(
 
     const newItem = {
       id: uuidv4(),
-      task,
-      done: false,
+      description,
+      created: new Date(),
     };
 
     console.log(entry.value());
