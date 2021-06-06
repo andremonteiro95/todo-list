@@ -11,6 +11,9 @@ import {
   deleteProject,
   deleteProjectError,
   deleteProjectSuccess,
+  deleteTask,
+  deleteTaskError,
+  deleteTaskSuccess,
   loadProjects,
   loadProjectsError,
   loadProjectsSuccess,
@@ -69,12 +72,30 @@ function* addTaskSaga({ payload: { projectId, task } }) {
   }
 }
 
+function* deleteTaskSaga({ payload: { projectId, taskId } }) {
+  try {
+    if (process.env.NODE_ENV !== 'production') {
+      yield delay(1000); // For presentation purposes
+    }
+    yield apiDelete(API_ENDPOINTS.tasks(projectId) + `/${taskId}`, true);
+    yield put(
+      deleteTaskSuccess({
+        projectId,
+        taskId,
+      }),
+    );
+  } catch (err) {
+    yield put(deleteTaskError(err.message));
+  }
+}
+
 function* projectsSaga() {
   yield all([
-    takeLatest(addTask.type, addTaskSaga),
     takeLatest(createProject.type, createProjectSaga),
     takeLatest(deleteProject.type, deleteProjectSaga),
     takeLatest(loadProjects.type, loadProjectsSaga),
+    takeLatest(addTask.type, addTaskSaga),
+    takeLatest(deleteTask.type, deleteTaskSaga),
   ]);
 }
 
