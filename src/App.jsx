@@ -7,7 +7,7 @@ import SignUp from './components/auth/SignUp';
 import Navbar from './components/layout/Navbar';
 import PublicRoute from './router/PublicRoute';
 import PrivateRoute from './router/PrivateRoute';
-import ProjectGrid from './components/projects/ProjectGrid';
+import ProjectsPage from './components/projects/ProjectsPage';
 
 function App() {
   return (
@@ -23,7 +23,7 @@ function App() {
             <SignUp />
           </PublicRoute>
           <PrivateRoute path="/">
-            <ProjectGrid />
+            <ProjectsPage />
           </PrivateRoute>
         </Switch>
       </Router>

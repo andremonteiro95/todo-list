@@ -11,6 +11,9 @@ const projectsSlice = createSlice({
   initialState,
   reducers: {
     clearProjects: () => ({ ...initialState }),
+    clearProjectsError: (state) => {
+      state.error = undefined;
+    },
     loadProjects: (state) => {
       state.error = undefined;
       state.loading = true;
@@ -133,6 +136,7 @@ const projectsSlice = createSlice({
 
 export const {
   clearProjects,
+  clearProjectsError,
   createProject,
   createProjectError,
   createProjectSuccess,

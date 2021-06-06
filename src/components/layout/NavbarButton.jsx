@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { getCurrentUser } from '../../redux/selectors';
 import { logout } from '../../redux/slices/auth';
+import { clearProjects } from '../../redux/slices/projects';
 
 function NavbarButton() {
   const [anchorElem, setAnchorEl] = React.useState();
@@ -32,6 +33,7 @@ function NavbarButton() {
   const handleLogout = () => {
     handleClose();
     dispatch(logout());
+    dispatch(clearProjects());
   };
 
   return (
