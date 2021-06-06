@@ -48,6 +48,19 @@ const projectsSlice = createSlice({
       state.error = payload;
       state.loading = false;
     },
+    addTask: (state) => {
+      state.error = undefined;
+      state.loading = true;
+    },
+    addTaskSuccess: (state, { payload: { projectId, task } }) => {
+      const index = state.projects.findIndex(({ id }) => id === projectId);
+      state.projects[index].tasks.push(task);
+      state.loading = false;
+    },
+    addTaskError: (state, { payload }) => {
+      state.error = payload;
+      state.loading = false;
+    },
   },
 });
 
@@ -62,6 +75,9 @@ export const {
   loadProjects,
   loadProjectsError,
   loadProjectsSuccess,
+  addTask,
+  addTaskError,
+  addTaskSuccess,
 } = projectsSlice.actions;
 
 const projectsReducer = projectsSlice.reducer;

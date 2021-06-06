@@ -2,6 +2,9 @@ import { all, delay, put, takeLatest } from 'redux-saga/effects';
 import { apiDelete, apiGet, apiPost } from '../../api';
 import { API_ENDPOINTS } from '../../constants';
 import {
+  addTask,
+  addTaskError,
+  addTaskSuccess,
   createProject,
   createProjectError,
   createProjectSuccess,
@@ -49,8 +52,26 @@ function* loadProjectsSaga() {
   }
 }
 
+function* addTaskSaga({ payload: { projectId, task } }) {
+  try {
+    if (process.env.NODE_ENV !== 'production') {
+      yield delay(1000); // For presentation purposes
+    }
+    const data = yield apiPost(API_ENDPOINTS.tasks(projectId), { task }, true);
+    yield put(
+      addTaskSuccess({
+        projectId,
+        task: data,
+      }),
+    );
+  } catch (err) {
+    yield put(addTaskError(err.message));
+  }
+}
+
 function* projectsSaga() {
   yield all([
+    takeLatest(addTask.type, addTaskSaga),
     takeLatest(createProject.type, createProjectSaga),
     takeLatest(deleteProject.type, deleteProjectSaga),
     takeLatest(loadProjects.type, loadProjectsSaga),

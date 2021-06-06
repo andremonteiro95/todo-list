@@ -20,17 +20,17 @@ router.delete(
       id: projectId,
       owner: email,
     });
-    const list = [...entry.value().list];
-    const taskIndex = list.findIndex(({ id }) => id === taskId);
+    const tasks = [...entry.value().tasks];
+    const taskIndex = tasks.findIndex(({ id }) => id === taskId);
 
     if (taskIndex < 0) {
       res.sendStatus(400);
       return;
     }
 
-    list.splice(taskIndex, 1);
+    tasks.splice(taskIndex, 1);
 
-    entry.assign({ list }).write();
+    entry.assign({ tasks }).write();
     res.sendStatus(200);
   },
 );
@@ -54,18 +54,18 @@ router.put(
       owner: email,
     });
 
-    const list = [...entry.value().list];
-    const taskIndex = list.findIndex(({ id }) => id === taskId);
+    const tasks = [...entry.value().tasks];
+    const taskIndex = tasks.findIndex(({ id }) => id === taskId);
 
     if (taskIndex < 0) {
       res.sendStatus(400);
       return;
     }
 
-    list[taskIndex].done = done != null ? done : list[taskIndex].task;
-    list[taskIndex].task = task || list[taskIndex].task;
+    tasks[taskIndex].done = done != null ? done : tasks[taskIndex].task;
+    tasks[taskIndex].task = task || tasks[taskIndex].task;
 
-    entry.assign({ list }).write();
+    entry.assign({ tasks }).write();
     res.sendStatus(200);
   },
 );
@@ -95,9 +95,11 @@ router.post(
       done: false,
     };
 
-    const list = [...entry.value().list, newItem];
+    console.log(entry.value());
 
-    entry.assign({ list }).write();
+    const tasks = [...entry.value().tasks, newItem];
+
+    entry.assign({ tasks }).write();
     res.status(201);
     res.json(newItem);
   },

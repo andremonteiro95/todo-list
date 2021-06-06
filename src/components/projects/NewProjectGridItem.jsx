@@ -70,7 +70,7 @@ function NewProjectGridItem() {
                 size="small"
                 {...register('name', {
                   required: true,
-                  pattern: VALIDATION_REGEXS.projectName,
+                  pattern: VALIDATION_REGEXS.noWhitespaceAtBeginning,
                 })}
                 error={!!errors.name}
                 helperText={getHelperText()}
