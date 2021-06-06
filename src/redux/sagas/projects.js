@@ -1,6 +1,7 @@
-import { all, delay, put, takeLatest } from 'redux-saga/effects';
-import { apiDelete, apiGet, apiPost } from '../../api';
+import { all, delay, put, select, takeLatest } from 'redux-saga/effects';
+import { apiDelete, apiGet, apiPost, apiPut } from '../../api';
 import { API_ENDPOINTS } from '../../constants';
+import { getProjectById } from '../selectors';
 import {
   addTask,
   addTaskError,
@@ -17,6 +18,9 @@ import {
   loadProjects,
   loadProjectsError,
   loadProjectsSuccess,
+  toggleTaskStatus,
+  toggleTaskStatusError,
+  toggleTaskStatusSuccess,
 } from '../slices/projects';
 
 function* createProjectSaga({ payload }) {
@@ -89,6 +93,31 @@ function* deleteTaskSaga({ payload: { projectId, taskId } }) {
   }
 }
 
+function* toggleTaskStatusSaga({ payload: { projectId, taskId } }) {
+  try {
+    if (process.env.NODE_ENV !== 'production') {
+      yield delay(1000); // For presentation purposes
+    }
+    const { done } = yield select(getProjectById(projectId), (project) => {
+      project.tasks.find(({ id }) => id === taskId);
+    });
+
+    yield apiPut(
+      API_ENDPOINTS.tasks(projectId) + `/${taskId}`,
+      { done: !done },
+      true,
+    );
+    yield put(
+      toggleTaskStatusSuccess({
+        projectId,
+        taskId,
+      }),
+    );
+  } catch (err) {
+    yield put(toggleTaskStatusError(err.message));
+  }
+}
+
 function* projectsSaga() {
   yield all([
     takeLatest(createProject.type, createProjectSaga),
@@ -96,6 +125,7 @@ function* projectsSaga() {
     takeLatest(loadProjects.type, loadProjectsSaga),
     takeLatest(addTask.type, addTaskSaga),
     takeLatest(deleteTask.type, deleteTaskSaga),
+    takeLatest(toggleTaskStatus.type, toggleTaskStatusSaga),
   ]);
 }
 

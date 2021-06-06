@@ -62,11 +62,15 @@ router.put(
       return;
     }
 
-    tasks[taskIndex].done = done != null ? done : tasks[taskIndex].task;
-    tasks[taskIndex].task = task || tasks[taskIndex].task;
+    const newTask = { ...tasks[taskIndex] };
+    newTask.done = done != null ? done : newTask.task;
+    newTask.task = task || newTask.task;
+
+    tasks[taskIndex] = newTask;
 
     entry.assign({ tasks }).write();
-    res.sendStatus(200);
+    res.status(200);
+    res.json(newTask);
   },
 );
 

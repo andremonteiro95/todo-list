@@ -35,3 +35,13 @@ export function apiPost(url, data, useAuth) {
     data,
   }).then(({ data }) => data);
 }
+
+export function apiPut(url, data, useAuth) {
+  return axios({
+    method: 'PUT',
+    baseURL: API_BASE_URL,
+    url,
+    headers: useAuth ? getAuthorizationHeaders() : undefined,
+    data,
+  }).then(({ data }) => data);
+}
