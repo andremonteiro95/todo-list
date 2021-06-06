@@ -10,7 +10,7 @@ import React from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { VALIDATION_REGEXS } from '../../constants';
 
-function RenameProjectDialog(props) {
+function RenameProjectOrTaskDialog(props) {
   const { label, onCancel, onRename, open, title, value } = props;
   const { control, handleSubmit } = useForm();
 
@@ -70,4 +70,4 @@ function RenameProjectDialog(props) {
   );
 }
 
-export default RenameProjectDialog;
+export default RenameProjectOrTaskDialog;

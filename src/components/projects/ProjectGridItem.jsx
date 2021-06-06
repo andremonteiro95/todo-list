@@ -12,7 +12,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { getIsProjectsLoading, getProjectById } from '../../redux/selectors';
 import { renameProject, deleteProject } from '../../redux/slices/projects';
 import AddTaskCardActions from './AddTaskCardActions';
-import RenameProjectDialog from './RenameProjectDialog';
+import RenameProjectOrTaskDialog from './RenameProjectDialog';
 import TaskList from './TaskList';
 
 function ProjectGridItem(props) {
@@ -22,11 +22,11 @@ function ProjectGridItem(props) {
   const project = useSelector(getProjectById(projectId));
   const isProjectsLoading = useSelector(getIsProjectsLoading);
 
+  const [isRenaming, setIsRenaming] = useState(false);
+
   const onDeleteClick = () => {
     dispatch(deleteProject(project.id));
   };
-
-  const [editingName, setEditingName] = useState(false);
 
   return (
     <>
@@ -41,7 +41,7 @@ function ProjectGridItem(props) {
                   size="small"
                   disabled={isProjectsLoading}
                   onClick={() => {
-                    setEditingName(true);
+                    setIsRenaming(true);
                   }}
                 >
                   <EditIcon />
@@ -63,17 +63,17 @@ function ProjectGridItem(props) {
           <AddTaskCardActions projectId={project.id} />
         </Card>
       </Grid>
-      <RenameProjectDialog
+      <RenameProjectOrTaskDialog
         title="Rename project"
         label="Project name"
         value={project.name}
-        open={editingName}
+        open={isRenaming}
         onCancel={() => {
-          setEditingName(false);
+          setIsRenaming(false);
         }}
         onRename={(name) => {
           dispatch(renameProject({ name, projectId: project.id }));
-          setEditingName(false);
+          setIsRenaming(false);
         }}
       />
     </>
