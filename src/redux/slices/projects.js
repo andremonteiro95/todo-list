@@ -35,6 +35,19 @@ const projectsSlice = createSlice({
       state.error = payload;
       state.loading = false;
     },
+    deleteProject: (state) => {
+      state.error = undefined;
+      state.loading = true;
+    },
+    deleteProjectSuccess: (state, { payload: projectId }) => {
+      const index = state.projects.findIndex(({ id }) => id === projectId);
+      state.projects.splice(index, 1);
+      state.loading = false;
+    },
+    deleteProjectError: (state, { payload }) => {
+      state.error = payload;
+      state.loading = false;
+    },
   },
 });
 
@@ -43,6 +56,9 @@ export const {
   createProject,
   createProjectError,
   createProjectSuccess,
+  deleteProject,
+  deleteProjectError,
+  deleteProjectSuccess,
   loadProjects,
   loadProjectsError,
   loadProjectsSuccess,

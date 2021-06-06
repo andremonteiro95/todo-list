@@ -9,6 +9,15 @@ function getAuthorizationHeaders() {
   };
 }
 
+export function apiDelete(url, useAuth) {
+  return axios({
+    method: 'DELETE',
+    baseURL: API_BASE_URL,
+    url,
+    headers: useAuth ? getAuthorizationHeaders() : undefined,
+  }).then(({ data }) => data);
+}
+
 export function apiGet(url, useAuth) {
   return axios({
     baseURL: API_BASE_URL,

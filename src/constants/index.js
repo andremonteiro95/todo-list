@@ -4,7 +4,7 @@ export const API_BASE_URL =
 export const API_ENDPOINTS = {
   login: '/auth/login',
   signup: '/auth/signup',
-  projects: '/projects/',
+  projects: '/projects',
 };
 
 export const VALIDATION_REGEXS = {

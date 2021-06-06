@@ -1,10 +1,13 @@
 import { all, delay, put, takeLatest } from 'redux-saga/effects';
-import { apiGet, apiPost } from '../../api';
+import { apiDelete, apiGet, apiPost } from '../../api';
 import { API_ENDPOINTS } from '../../constants';
 import {
   createProject,
   createProjectError,
   createProjectSuccess,
+  deleteProject,
+  deleteProjectError,
+  deleteProjectSuccess,
   loadProjects,
   loadProjectsError,
   loadProjectsSuccess,
@@ -19,6 +22,18 @@ function* createProjectSaga({ payload }) {
     yield put(createProjectSuccess(data));
   } catch (err) {
     yield put(createProjectError(err.message));
+  }
+}
+
+function* deleteProjectSaga({ payload: projectId }) {
+  try {
+    if (process.env.NODE_ENV !== 'production') {
+      yield delay(1000); // For presentation purposes
+    }
+    yield apiDelete(API_ENDPOINTS.projects + `/${projectId}`, true);
+    yield put(deleteProjectSuccess(projectId));
+  } catch (err) {
+    yield put(deleteProjectError(err.message));
   }
 }
 
@@ -37,6 +52,7 @@ function* loadProjectsSaga() {
 function* projectsSaga() {
   yield all([
     takeLatest(createProject.type, createProjectSaga),
+    takeLatest(deleteProject.type, deleteProjectSaga),
     takeLatest(loadProjects.type, loadProjectsSaga),
   ]);
 }

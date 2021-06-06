@@ -76,7 +76,7 @@ router.post(
   checkAccessToProject,
   function (req, res) {
     const { email } = req.user;
-    const { projectId: id } = req.params;
+    const { projectId } = req.params;
     const { task } = req.body;
 
     if (!task || typeof task !== 'string' || !task.trim()) {
@@ -85,21 +85,21 @@ router.post(
     }
 
     const entry = db.get('projects').find({
-      id,
+      id: projectId,
       owner: email,
     });
 
-    const list = [
-      ...entry.value().list,
-      {
-        id: uuidv4(),
-        task,
-        done: false,
-      },
-    ];
+    const newItem = {
+      id: uuidv4(),
+      task,
+      done: false,
+    };
+
+    const list = [...entry.value().list, newItem];
 
     entry.assign({ list }).write();
-    res.sendStatus(201);
+    res.status(201);
+    res.json(newItem);
   },
 );
 
@@ -153,22 +153,21 @@ router.post('/', authenticateUser, function (req, res) {
   }
 
   const id = uuidv4();
+  const newItem = {
+    id,
+    name,
+    tasks: [],
+  };
 
   db.get('projects')
     .push({
-      id,
-      name,
+      ...newItem,
       owner: email,
-      tasks: [],
     })
     .write();
 
   res.status(201);
-  res.json({
-    id,
-    name,
-    tasks: [],
-  });
+  res.json(newItem);
 });
 
 router.get('/', authenticateUser, function (req, res) {

@@ -6,7 +6,9 @@ export const getIsAuthenticated = (state) => !!state.authState.currentUser;
 export const getIsAuthLoading = (state) => state.authState.loading;
 export const getProjects = (state) => state.projectsState.projects;
 export const getIsProjectsLoading = (state) => state.projectsState.loading;
-export const getProjectById = (id) =>
+export const getProjectById = (projectId) =>
   createSelector(getProjects, (projects) =>
-    projects.find(({ id: projectId }) => projectId === id),
+    projects.find(({ id }) => id === projectId),
   );
+export const getTasksByProjectId = (projectId) =>
+  createSelector(getProjectById(projectId), ({ tasks }) => tasks);
