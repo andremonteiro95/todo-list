@@ -6,28 +6,16 @@ import {
   DialogTitle,
   TextField,
 } from '@material-ui/core';
-import React, { useEffect } from 'react';
-import { useForm } from 'react-hook-form';
+import React from 'react';
+import { Controller, useForm } from 'react-hook-form';
 import { VALIDATION_REGEXS } from '../../constants';
 
 function RenameProjectDialog(props) {
-  const { onCancel, open, name } = props;
-  console.log(name);
-  const {
-    formState: { errors },
-    handleSubmit,
-    register,
-    setValue,
-  } = useForm();
+  const { label, onCancel, onRename, open, title, value } = props;
+  const { control, handleSubmit } = useForm();
 
-  useEffect(() => {
-    setTimeout(() => {
-      setValue('name', name);
-    }, 1000);
-  }, [name, open]);
-
-  const getHelperText = () => {
-    switch (errors.name?.type) {
+  const getHelperText = (error) => {
+    switch (error?.type) {
       case 'required':
         return 'The project name is required.';
       case 'pattern':
@@ -37,27 +25,36 @@ function RenameProjectDialog(props) {
     }
   };
 
-  const onSubmit = (data) => {
-    console.log(data);
+  const onSubmit = ({ name }) => {
+    onRename(name);
   };
 
   return (
     <Dialog open={open} onClose={onCancel} fullWidth maxWidth="xs">
       <form onSubmit={handleSubmit(onSubmit)}>
-        <DialogTitle>Rename project</DialogTitle>
+        <DialogTitle>{title}</DialogTitle>
         <DialogContent>
-          <TextField
-            autoFocus
-            required
-            margin="dense"
-            label="Project name"
-            fullWidth
-            {...register('name', {
+          {/* Workaround to work inside a dialog */}
+          <Controller
+            name="name"
+            control={control}
+            defaultValue={value}
+            rules={{
               required: true,
-              pattern: VALIDATION_REGEXS.projectName,
-            })}
-            error={!!errors.name}
-            helperText={getHelperText()}
+              pattern: VALIDATION_REGEXS.noWhitespaceAtBeginning,
+            }}
+            render={({ field, fieldState: { error } }) => (
+              <TextField
+                autoFocus
+                required
+                margin="dense"
+                label={label}
+                fullWidth
+                error={!!error}
+                helperText={getHelperText(error)}
+                {...field}
+              />
+            )}
           />
         </DialogContent>
         <DialogActions>
@@ -65,7 +62,7 @@ function RenameProjectDialog(props) {
             Cancel
           </Button>
           <Button type="submit" color="primary">
-            Rename
+            Save
           </Button>
         </DialogActions>
       </form>

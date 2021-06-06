@@ -48,6 +48,19 @@ const projectsSlice = createSlice({
       state.error = payload;
       state.loading = false;
     },
+    renameProject: (state) => {
+      state.error = undefined;
+      state.loading = true;
+    },
+    renameProjectSuccess: (state, { payload: project }) => {
+      const index = state.projects.findIndex(({ id }) => id === project.id);
+      state.projects[index] = project;
+      state.loading = false;
+    },
+    renameProjectError: (state, { payload }) => {
+      state.error = payload;
+      state.loading = false;
+    },
     addTask: (state) => {
       state.error = undefined;
       state.loading = true;
@@ -97,6 +110,24 @@ const projectsSlice = createSlice({
       state.error = payload;
       state.loading = false;
     },
+    editTask: (state) => {
+      state.error = undefined;
+      state.loading = true;
+    },
+    editTaskSuccess: (state, { payload: { projectId, task } }) => {
+      const projectIndex = state.projects.findIndex(
+        ({ id }) => id === projectId,
+      );
+      const taskIndex = state.projects[projectIndex].tasks.findIndex(
+        ({ id }) => id === task.id,
+      );
+      state.projects[projectIndex].tasks[taskIndex] = task;
+      state.loading = false;
+    },
+    editTaskError: (state, { payload }) => {
+      state.error = payload;
+      state.loading = false;
+    },
   },
 });
 
@@ -111,6 +142,9 @@ export const {
   loadProjects,
   loadProjectsError,
   loadProjectsSuccess,
+  renameProject,
+  renameProjectError,
+  renameProjectSuccess,
   addTask,
   addTaskError,
   addTaskSuccess,
@@ -120,6 +154,9 @@ export const {
   toggleTaskStatus,
   toggleTaskStatusError,
   toggleTaskStatusSuccess,
+  editTask,
+  editTaskError,
+  editTaskSuccess,
 } = projectsSlice.actions;
 
 const projectsReducer = projectsSlice.reducer;

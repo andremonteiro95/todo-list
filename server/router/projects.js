@@ -148,15 +148,21 @@ router.put(
       return;
     }
 
-    db.get('projects')
-      .find({
-        id,
-        owner: email,
-      })
-      .assign({ name })
-      .write();
+    const entry = db.get('projects').find({
+      id,
+      owner: email,
+    });
 
-    res.sendStatus(200);
+    const value = entry.value();
+
+    entry.assign({ name }).write();
+
+    res.status(200);
+    res.json({
+      id,
+      name,
+      tasks: value.tasks,
+    });
   },
 );
 

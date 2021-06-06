@@ -7,6 +7,9 @@ import {
   addTask,
   addTaskError,
   addTaskSuccess,
+  renameProject,
+  renameProjectError,
+  renameProjectSuccess,
   createProject,
   createProjectError,
   createProjectSuccess,
@@ -33,6 +36,22 @@ function* createProjectSaga({ payload }) {
     yield put(createProjectSuccess(data));
   } catch (err) {
     yield put(createProjectError(err.message));
+  }
+}
+
+function* renameProjectSaga({ payload: { name, projectId } }) {
+  try {
+    if (process.env.NODE_ENV !== 'production') {
+      yield delay(1000); // For presentation purposes
+    }
+    const data = yield apiPut(
+      API_ENDPOINTS.projects + `/${projectId}`,
+      { name },
+      true,
+    );
+    yield put(renameProjectSuccess(data));
+  } catch (err) {
+    yield put(renameProjectError(err.message));
   }
 }
 
@@ -127,6 +146,7 @@ function* projectsSaga() {
     takeLatest(createProject.type, createProjectSaga),
     takeLatest(deleteProject.type, deleteProjectSaga),
     takeLatest(loadProjects.type, loadProjectsSaga),
+    takeLatest(renameProject.type, renameProjectSaga),
     takeLatest(addTask.type, addTaskSaga),
     takeLatest(deleteTask.type, deleteTaskSaga),
     takeLatest(toggleTaskStatus.type, toggleTaskStatusSaga),
