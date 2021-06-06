@@ -87,7 +87,7 @@ function NewProjectGridItem() {
               />
               <Button
                 type="submit"
-                disabled={isProjectsLoading}
+                disabled={isCreating}
                 fullWidth
                 variant="contained"
                 color="secondary"

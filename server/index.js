@@ -32,7 +32,7 @@ app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, '../build/index.html'));
 });
 
-const port = process.env.PORT || 80;
+const port = isProduction ? process.env.PORT || 80 : 3001;
 app.listen(port, () => {
   console.log(`Listening on port ${port}.`);
 });

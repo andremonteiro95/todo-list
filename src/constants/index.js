@@ -1,5 +1,5 @@
 export const API_BASE_URL =
-  process.env.NODE_ENV !== 'production' ? 'http://localhost/api' : '/api';
+  process.env.NODE_ENV === 'production' ? '/api' : 'http://localhost:3001/api';
 
 export const API_ENDPOINTS = {
   login: '/auth/login',
