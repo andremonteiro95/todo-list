@@ -1,5 +1,5 @@
 import Grid from '@material-ui/core/Grid';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Box, CircularProgress } from '@material-ui/core';
 import NewProjectGridItem from './NewProjectGridItem';
 import ProjectGridItem from './ProjectGridItem';
@@ -11,12 +11,21 @@ function ProjectGrid() {
   const dispatch = useDispatch();
   const projects = useSelector(getProjects);
   const isProjectsLoading = useSelector(getIsProjectsLoading);
+  const [isFirstLoad, setIsFirstLoad] = useState(true);
+
+  useEffect(() => {
+    if (isFirstLoad && !isProjectsLoading) {
+      setIsFirstLoad(false);
+    }
+  }, [isProjectsLoading]);
 
   useEffect(() => {
     dispatch(loadProjects());
-  }, [dispatch]);
+    setIsFirstLoad(true);
+  }, []);
 
-  if (projects.length === 0 && isProjectsLoading) {
+  // The progress circle is only shown during the first project loading
+  if (isFirstLoad && projects.length === 0 && isProjectsLoading) {
     return (
       <Box margin={2} display="flex" justifyContent="center">
         <Box marginTop={8}>

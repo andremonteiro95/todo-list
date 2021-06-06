@@ -71,7 +71,7 @@ function* deleteProjectSaga({ payload: projectId }) {
 function* loadProjectsSaga() {
   try {
     if (process.env.NODE_ENV !== 'production') {
-      yield delay(1000); // For presentation purposes
+      yield delay(15000); // For presentation purposes
     }
     const data = yield apiGet(API_ENDPOINTS.projects, true);
     yield put(loadProjectsSuccess(data));

@@ -16,7 +16,7 @@ function Navbar() {
     <AppBar position="static">
       <Toolbar>
         <Typography variant="h6" className={classes.title}>
-          TODO List
+          To Do Lists
         </Typography>
         <NavbarButton />
       </Toolbar>
