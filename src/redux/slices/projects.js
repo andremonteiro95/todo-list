@@ -110,11 +110,11 @@ const projectsSlice = createSlice({
       state.error = payload;
       state.loading = false;
     },
-    editTask: (state) => {
+    renameTask: (state) => {
       state.error = undefined;
       state.loading = true;
     },
-    editTaskSuccess: (state, { payload: { projectId, task } }) => {
+    renameTaskSuccess: (state, { payload: { projectId, task } }) => {
       const projectIndex = state.projects.findIndex(
         ({ id }) => id === projectId,
       );
@@ -124,7 +124,7 @@ const projectsSlice = createSlice({
       state.projects[projectIndex].tasks[taskIndex] = task;
       state.loading = false;
     },
-    editTaskError: (state, { payload }) => {
+    renameTaskError: (state, { payload }) => {
       state.error = payload;
       state.loading = false;
     },
@@ -154,9 +154,9 @@ export const {
   toggleTaskStatus,
   toggleTaskStatusError,
   toggleTaskStatusSuccess,
-  editTask,
-  editTaskError,
-  editTaskSuccess,
+  renameTask,
+  renameTaskError,
+  renameTaskSuccess,
 } = projectsSlice.actions;
 
 const projectsReducer = projectsSlice.reducer;

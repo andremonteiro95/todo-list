@@ -7,7 +7,7 @@ import {
 } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getIsProjectsLoading, getProjectById } from '../../redux/selectors';
 import { renameProject, deleteProject } from '../../redux/slices/projects';
@@ -23,6 +23,13 @@ function ProjectGridItem(props) {
   const isProjectsLoading = useSelector(getIsProjectsLoading);
 
   const [isRenaming, setIsRenaming] = useState(false);
+
+  // Close dialog only after receiving a response for the request
+  useEffect(() => {
+    if (isRenaming && !isProjectsLoading) {
+      setIsRenaming(false);
+    }
+  }, [isProjectsLoading]);
 
   const onDeleteClick = () => {
     dispatch(deleteProject(project.id));
@@ -73,7 +80,6 @@ function ProjectGridItem(props) {
         }}
         onRename={(name) => {
           dispatch(renameProject({ name, projectId: project.id }));
-          setIsRenaming(false);
         }}
       />
     </>

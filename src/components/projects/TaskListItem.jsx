@@ -10,10 +10,14 @@ import {
 } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getIsProjectsLoading } from '../../redux/selectors';
-import { deleteTask, toggleTaskStatus } from '../../redux/slices/projects';
+import {
+  deleteTask,
+  renameTask,
+  toggleTaskStatus,
+} from '../../redux/slices/projects';
 import { formatDate } from '../../utils/date';
 import RenameProjectOrTaskDialog from './RenameProjectDialog';
 
@@ -41,6 +45,13 @@ function TaskListItem(props) {
     }
     dispatch(toggleTaskStatus({ projectId, taskId }));
   };
+
+  // Close dialog only after receiving a response for the request
+  useEffect(() => {
+    if (isRenaming && !isProjectsLoading) {
+      setIsRenaming(false);
+    }
+  }, [isProjectsLoading]);
 
   const getTooltipTitle = ({ created, done }) =>
     done
@@ -86,9 +97,8 @@ function TaskListItem(props) {
           onCancel={() => {
             setIsRenaming(false);
           }}
-          onRename={(name) => {
-            // dispatch(renameProject({ name, projectId: project.id }));
-            setIsRenaming(false);
+          onRename={(description) => {
+            dispatch(renameTask({ description, projectId, taskId: id }));
           }}
         />
       )}

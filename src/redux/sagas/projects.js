@@ -25,6 +25,7 @@ import {
   toggleTaskStatus,
   toggleTaskStatusError,
   toggleTaskStatusSuccess,
+  renameTask,
 } from '../slices/projects';
 
 function* createProjectSaga({ payload }) {
@@ -141,6 +142,27 @@ function* toggleTaskStatusSaga({ payload: { projectId, taskId } }) {
   }
 }
 
+function* renameTaskSaga({ payload: { projectId, taskId, description } }) {
+  try {
+    if (process.env.NODE_ENV !== 'production') {
+      yield delay(1000); // For presentation purposes
+    }
+    const newTask = yield apiPut(
+      API_ENDPOINTS.tasks(projectId) + `/${taskId}`,
+      { description },
+      true,
+    );
+    yield put(
+      toggleTaskStatusSuccess({
+        projectId,
+        task: newTask,
+      }),
+    );
+  } catch (err) {
+    yield put(toggleTaskStatusError(err.message));
+  }
+}
+
 function* projectsSaga() {
   yield all([
     takeLatest(createProject.type, createProjectSaga),
@@ -150,6 +172,7 @@ function* projectsSaga() {
     takeLatest(addTask.type, addTaskSaga),
     takeLatest(deleteTask.type, deleteTaskSaga),
     takeLatest(toggleTaskStatus.type, toggleTaskStatusSaga),
+    takeLatest(renameTask.type, renameTaskSaga),
   ]);
 }
 

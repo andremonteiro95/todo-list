@@ -9,7 +9,7 @@ import {
   TextField,
   Typography,
 } from '@material-ui/core';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 import { VALIDATION_REGEXS } from '../../constants';
@@ -35,7 +35,17 @@ function NewProjectGridItem() {
   const dispatch = useDispatch();
   const isProjectsLoading = useSelector(getIsProjectsLoading);
 
+  const [isCreating, setIsCreating] = useState();
+
+  // This effect is for showing a progress circle only when creating a project
+  useEffect(() => {
+    if (isCreating && !isProjectsLoading) {
+      setIsCreating(false);
+    }
+  }, [isProjectsLoading]);
+
   const onSubmit = (data) => {
+    setIsCreating(true);
     dispatch(createProject(data));
     reset();
   };
@@ -82,10 +92,8 @@ function NewProjectGridItem() {
                 variant="contained"
                 color="secondary"
               >
-                {!isProjectsLoading && 'Create Project'}
-                {isProjectsLoading && (
-                  <CircularProgress color="inherit" size={24} />
-                )}
+                {!isCreating && 'Create Project'}
+                {isCreating && <CircularProgress color="inherit" size={24} />}
               </Button>
             </CardContent>
           </form>
